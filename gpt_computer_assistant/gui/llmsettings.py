@@ -6,16 +6,16 @@ except ImportError:
     from utils.db import *
     from agent.chat_history import clear_chat_history
     from llm_settings import llm_show_name, llm_settings
-    
+
 from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLabel, QLineEdit, QPushButton
-from PyQt5.QtCore import Qt, QTimer, QRect, pyqtSignal, QObject
-from PyQt5.QtWidgets import QComboBox, QLabel
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QComboBox
 
 from gpt_computer_assistant.utils.db import save_openai_url, save_groq_api_key
 
 
 def llmsettings_popup(self):
-    from ..gpt_computer_assistant import the_input_box, the_main_window
+    from ..gpt_computer_assistant import the_main_window
 
     # Create a settings dialog and inside of it create a text input about openai_api_key and a button to save it
     settings_dialog = QDialog()
@@ -36,6 +36,7 @@ def llmsettings_popup(self):
         save_api_key(api_key)
 
         the_main_window.update_from_thread("Saved API Key")
+        the_main_window.input_box.setPlaceholderText("Type here")
         settings_dialog.close()
 
     save_button.clicked.connect(lambda: save_api_key_(api_key_input.text()))
@@ -54,6 +55,7 @@ def llmsettings_popup(self):
         save_openai_url(openai_url)
 
         the_main_window.update_from_thread("Saved OpenAI Base URL")
+        the_main_window.input_box.setPlaceholderText("Type here")
         settings_dialog.close()
 
     openai_url_save_button = QPushButton("Save URL")
@@ -72,6 +74,7 @@ def llmsettings_popup(self):
     def groq_save_api_key_(api_key):
         save_groq_api_key(api_key)
         the_main_window.update_from_thread("Saved Groq API Key")
+        the_main_window.input_box.setPlaceholderText("Type here")
         settings_dialog.close()
 
     groq_save_button.clicked.connect(
@@ -92,6 +95,7 @@ def llmsettings_popup(self):
     def google_save_api_key_(api_key):
         save_google_api_key(api_key)
         the_main_window.update_from_thread("Saved Google API Key")
+        the_main_window.input_box.setPlaceholderText("Type here")
         settings_dialog.close()
 
     google_save_button.clicked.connect(
@@ -173,12 +177,10 @@ def llmsettings_popup(self):
         show_google()
 
     if not llm_settings[llm_show_name[model_select.currentText()]]["transcription"]:
-        from ..gpt_computer_assistant import the_main_window
 
         the_main_window.remove_painting()
 
     if not llm_settings[llm_show_name[model_select.currentText()]]["vision"]:
-        from ..gpt_computer_assistant import the_main_window
 
         the_main_window.remove_screenshot_button()
 
@@ -198,7 +200,7 @@ def llmsettings_popup(self):
 
 
 
-        if llm_settings[llm_show_name[model_select.currentText()]]["transcription"] == False: 
+        if llm_settings[llm_show_name[model_select.currentText()]]["transcription"] is False: 
             from ..gpt_computer_assistant import the_main_window
 
             the_main_window.remove_painting()

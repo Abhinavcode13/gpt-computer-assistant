@@ -1,14 +1,19 @@
 try:
     from ..llm import get_model
-    from ..utils.db import load_model_settings
+    from ..utils.db import *
     from ..llm_settings import llm_settings
+    from ..tooler import *
+    from ..display_tools import *
+    from ..teams import *
+    from .agent_tools import get_tools
 except ImportError:
     from llm import get_model
-    from utils.db import load_model_settings
+    from utils.db import *
     from llm_settings import llm_settings
-
-
-from langgraph.checkpoint.sqlite import SqliteSaver
+    from tooler import *
+    from display_tools import *
+    from teams import *
+    from agent_tools import get_tools
 
 
 from langchain.agents import AgentExecutor, create_json_chat_agent
@@ -19,23 +24,7 @@ from langgraph.prebuilt import chat_agent_executor
 
 custom_tools = []
 
-try:
-    from upsonic import Tiger
-    tools = Tiger()
-    tools.enable_auto_requirements = True
-    tools = tools.langchain()
-except:
-    from langchain.agents import Tool
-    from langchain_experimental.utilities import PythonREPL
 
-    python_repl = PythonREPL()
-    # You can create the tool to pass to an agent
-    repl_tool = Tool(
-        name="python_repl",
-        description="A Python shell. Use this to execute python commands. Input should be a valid python command. If you want to see the output of a value, you should print it out with `print(...)`.",
-        func=python_repl.run,
-    )
-    tools = [repl_tool]
 
 
 prompt_cache = {}
@@ -53,13 +42,28 @@ def get_prompt(name):
         return prompt
 
 
+
 def get_agent_executor():
-    global custom_tools, tools
+    global custom_tools
+    tools = get_tools()
     tools += custom_tools
+
+    if is_predefined_agents_setting_active():
+        try:
+            import crewai
+            tools += [search_on_internet_and_report_team, generate_code_with_aim_team]
+        except ImportError:
+            pass
+
+
     model = load_model_settings()
 
 
-    if llm_settings[model]["provider"] == "openai" or llm_settings[model]["provider"] == "groq" or llm_settings[model]["provider"] == "google":
+    if llm_settings[model]["provider"] == "openai":
+        tools += [click_on_a_text_on_the_screen, click_on_a_icon_on_the_screen, move_on_a_text_on_the_screen, move_on_a_icon_on_the_screen, mouse_scroll]
+
+
+    if llm_settings[model]["provider"] == "openai" or llm_settings[model]["provider"] == "groq":
         return chat_agent_executor.create_tool_calling_executor(get_model(), tools)
 
 
@@ -74,21 +78,3 @@ def get_agent_executor():
         )
 
 
-
-
-
-"""
-from langchain.agents import Tool
-from langchain_experimental.utilities import PythonREPL
-python_repl = PythonREPL()
-# You can create the tool to pass to an agent
-repl_tool = Tool(
-    name="python_repl",
-    description="A Python shell. Use this to execute python commands. Input should be a valid python command. If you want to see the output of a value, you should print it out with `print(...)`.",
-    func=python_repl.run,
-)
-
-from langgraph.prebuilt import chat_agent_executor
-def get_agent_executor():
-    return chat_agent_executor.create_tool_calling_executor(get_model(), [repl_tool])
-"""

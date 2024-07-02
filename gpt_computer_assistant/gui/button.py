@@ -5,7 +5,7 @@ import threading
 try:
     from ..audio.record import *
     from ..screen.shot import *
-    from ..agent.proccess import *
+    from ..agent.process import *
     from ..agent.chat_history import clear_chat_history
     from ..utils.db import (
         screenshot_path,
@@ -21,7 +21,7 @@ try:
 except ImportError:
     from audio.record import *
     from screen.shot import *
-    from agent.proccess import *
+    from agent.process import *
     from agent.chat_history import clear_chat_history
     from utils.db import (
         screenshot_path,
@@ -34,7 +34,6 @@ except ImportError:
         get_profile,
     )
     from screen.shot import take_screenshot
-from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLabel, QLineEdit, QPushButton
 
 recording_thread = None
 
@@ -59,11 +58,11 @@ class ButtonHandler:
         )
 
     def toggle_recording(
-        self, no_screenshot=False, take_system_audio=False, dont_save_image=False
+        self, no_screenshot=False, take_system_audio=False, dont_save_image=False, new_record=False
     ):
         """Toggle audio recording."""
 
-        if self.recording:
+        if self.recording and not new_record:
             stop_recording()
             self.recording = False
         else:
@@ -76,9 +75,9 @@ class ButtonHandler:
             self.dont_save_image = dont_save_image
 
             global recording_thread
-            if recording_thread is None or not recording_thread.is_alive():
+            if recording_thread is None or not recording_thread.is_alive() or new_record:
                 recording_thread = threading.Thread(
-                    target=start_recording, args=(take_system_audio,)
+                    target=start_recording, args=(take_system_audio,self,)
                 )
                 recording_thread.start()
             signal_handler.recording_started.emit()
@@ -130,7 +129,7 @@ class ButtonHandler:
     def on_assistant_response_ready(self):
         """Handle event when assistant's response is ready."""
 
-        self.main_window.update_state("talking")
+        self.main_window.update_state("aitalking")
 
     def input_text(self, text):
         """Handle input text."""

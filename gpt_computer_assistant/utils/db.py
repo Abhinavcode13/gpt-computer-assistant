@@ -1,6 +1,5 @@
 import os
 import uuid
-import getpass
 from dotenv import load_dotenv
 
 load_dotenv(".env")
@@ -245,3 +244,185 @@ def load_google_api_key():
             return "CHANGE_ME"
     with open(googlekey, "r") as f:
         return f.read()
+
+
+
+
+
+predefined_agents_setting = os.path.join(artifacts_dir, "predefined_agents_setting.db")
+
+
+def activate_predefined_agents_setting():
+    """Activate the predefined agents setting setting."""
+    with open(predefined_agents_setting, "w") as f:
+        f.write("1")
+
+
+def deactivate_predefined_agents_setting():
+    """Deactivate the predefined agents setting setting."""
+    with open(predefined_agents_setting, "w") as f:
+        f.write("0")
+
+
+def is_predefined_agents_setting_active():
+    """Check if the predefined agents setting setting is active."""
+    if not os.path.exists(predefined_agents_setting):
+        return True
+    with open(predefined_agents_setting, "r") as f:
+        return f.read() == "1"
+
+
+
+
+
+
+online_tools_setting = os.path.join(artifacts_dir, "online_tools.db")
+
+
+def activate_online_tools_setting():
+    """Activate the online_tools setting."""
+    with open(online_tools_setting, "w") as f:
+        f.write("1")
+
+
+def deactivate_online_tools_setting():
+    """Deactivate the online_tools setting."""
+    with open(online_tools_setting, "w") as f:
+        f.write("0")
+
+
+def is_online_tools_setting_active():
+    """Check if the online_tools setting is active."""
+    if not os.path.exists(online_tools_setting):
+        return False
+    with open(online_tools_setting, "r") as f:
+        return f.read() == "1"
+
+
+
+
+
+
+auto_stop_recording_setting = os.path.join(artifacts_dir, "auto_stop_recording.db")
+
+
+def activate_auto_stop_recording_setting():
+    """Activate the auto_stop_recording setting."""
+    with open(auto_stop_recording_setting, "w") as f:
+        f.write("1")
+
+
+def deactivate_auto_stop_recording_setting():
+    """Deactivate the auto_stop_recording setting."""
+    with open(auto_stop_recording_setting, "w") as f:
+        f.write("0")
+
+
+def is_auto_stop_recording_setting_active():
+    """Check if the auto_stop_recording setting is active."""
+    if not os.path.exists(auto_stop_recording_setting):
+        return True
+    with open(auto_stop_recording_setting, "r") as f:
+        return f.read() == "1"
+
+
+
+pvporcupine_api_key = os.path.join(artifacts_dir, "pvporcupine_api_key.db")
+
+
+def save_pvporcupine_api_key(api_key):
+    """Save the Pvporcupine AI API key to a file."""
+    with open(pvporcupine_api_key, "w") as f:
+        f.write(api_key)
+
+
+def load_pvporcupine_api_key():
+    """Load the Pvporcupine AI API key from a file or environment variables."""
+    if not os.path.exists(pvporcupine_api_key):
+        return "CHANGE_ME"
+    with open(pvporcupine_api_key, "r") as f:
+        return f.read()
+
+
+
+
+wake_word_setting = os.path.join(artifacts_dir, "wake_word_setting.db")
+
+
+def activate_wake_word():
+    """Activate the wake_word_setting setting."""
+    with open(wake_word_setting, "w") as f:
+        f.write("1")
+
+
+def deactivate_wake_word():
+    """Deactivate the wake_word_setting setting."""
+    with open(wake_word_setting, "w") as f:
+        f.write("0")
+
+
+def is_wake_word_active():
+    """Check if the wake_word_setting setting is active."""
+    try:
+        import pyaudio
+    except ImportError:
+        return False
+    if not os.path.exists(wake_word_setting):
+        return True
+    with open(wake_word_setting, "r") as f:
+        return f.read() == "1"
+
+
+
+
+
+
+
+wake_word_screen_setting = os.path.join(artifacts_dir, "wake_word_screen_setting.db")
+
+
+def activate_wake_word_screen_setting():
+    """Activate the wake_word_screen setting."""
+    with open(wake_word_screen_setting, "w") as f:
+        f.write("1")
+
+
+def deactivate_wake_word_screen_setting():
+    """Deactivate the wake_word_screen setting."""
+    with open(wake_word_screen_setting, "w") as f:
+        f.write("0")
+
+
+def is_wake_word_screen_setting_active():
+    """Check if the wake_word_screen setting is active."""
+    if not os.path.exists(wake_word_screen_setting):
+        return True
+    with open(wake_word_screen_setting, "r") as f:
+        return f.read() == "1"
+
+
+
+
+
+
+continuously_conversations_setting = os.path.join(artifacts_dir, "continuously_conversations_setting.db")
+
+
+def activate_continuously_conversations_setting():
+    """Activate the continuously_conversations setting."""
+    with open(continuously_conversations_setting, "w") as f:
+        f.write("1")
+
+
+def deactivate_continuously_conversations_setting():
+    """Deactivate the continuously_conversations setting."""
+    with open(continuously_conversations_setting, "w") as f:
+        f.write("0")
+
+
+def is_continuously_conversations_setting_active():
+    """Check if the continuously_conversations setting is active."""
+    if not os.path.exists(continuously_conversations_setting):
+        return False
+    with open(continuously_conversations_setting, "r") as f:
+        return f.read() == "1"

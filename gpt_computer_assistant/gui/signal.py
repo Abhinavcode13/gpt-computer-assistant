@@ -1,4 +1,4 @@
-from PyQt5.QtCore import Qt, QTimer, QRect, pyqtSignal, QObject
+from PyQt5.QtCore import pyqtSignal, QObject
 
 
 
@@ -17,7 +17,7 @@ class SignalHandler(QObject):
     - assistant_response_stopped: Signal emitted when the assistant response display is stopped.
 
     """
-    
+
     recording_started = pyqtSignal()
     recording_stopped = pyqtSignal()
     assistant_thinking = pyqtSignal()

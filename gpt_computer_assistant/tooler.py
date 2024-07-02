@@ -1,5 +1,12 @@
 from langchain.tools import tool
-from .agent.agent import custom_tools
+
+try:
+    from .utils.db import load_api_key
+    from .llm import get_model
+except ImportError:
+    from utils.db import load_api_key
+    from llm import get_model
+
 
 def Tool(func):
     """
@@ -11,6 +18,8 @@ def Tool(func):
     Returns:
     - callable: The input function `func` unchanged.
     """
+    from .agent.agent import custom_tools
     global custom_tools
     custom_tools.append(tool(func))
     return func
+

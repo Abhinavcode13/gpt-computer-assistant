@@ -1,4 +1,3 @@
-import base64
 from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
 
 from .chat_history import *
@@ -35,7 +34,7 @@ def agentic(
                 role=each["role"],
                 goal=each["goal"],
                 backstory=each["backstory"],
-                llm=get_model(),
+                llm=get_model(high_context=True),
             )
         )
 
@@ -45,7 +44,7 @@ def agentic(
 
     def image_explaination():
         the_message = [
-            {"type": "text", "text": f"Explain the image"},
+            {"type": "text", "text": "Explain the image"},
         ]
 
         if screenshot_path:
@@ -96,11 +95,10 @@ def agentic(
 
 
     task = Task(
-        description=llm_input, expected_output="Answer", agent=agents[0], tools=tools
+        description=llm_input, expected_output="Answer", agent=agents[0], tools=get_tools()
     )
 
     the_crew = Crew(
-        llm=get_model(),
         agents=agents,
         tasks=[task],
         full_output=True,
@@ -216,16 +214,16 @@ def assistant(
 
 
 
-    if dont_save_image and screenshot_path != None:
+    if dont_save_image and screenshot_path is not None:
         currently_messages = get_chat_message_history().messages
-        if take_screenshot:
-            last_message = currently_messages[-1].content[0]
-            currently_messages.remove(currently_messages[-1])
 
-            get_chat_message_history().clear()
-            for message in currently_messages:
-                get_chat_message_history().add_message(message)
-            get_chat_message_history().add_message(HumanMessage(content=[last_message]))
+        last_message = currently_messages[-1].content[0]
+        currently_messages.remove(currently_messages[-1])
+
+        get_chat_message_history().clear()
+        for message in currently_messages:
+            get_chat_message_history().add_message(message)
+        get_chat_message_history().add_message(HumanMessage(content=[last_message]))
 
     get_chat_message_history().add_message(the_last_messages[-1])
 
